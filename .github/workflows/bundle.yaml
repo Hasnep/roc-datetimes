@@ -1,0 +1,26 @@
+name: Bundle
+
+on:
+  # Run when a release is published
+  release:
+    types:
+      - published
+
+jobs:
+  bundle:
+    name: Bundle
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+      - name: Install Roc
+        uses: hasnep/setup-roc@main
+        with:
+          roc-version: nightly
+      - name: Bundle and release the library
+        uses: hasnep/bundle-roc-library@main
+        with:
+          library-path: ./src/
+          token: ${{ github.token }}
