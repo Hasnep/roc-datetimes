@@ -12,7 +12,7 @@ interface NaiveDate exposes [
         getMonth,
     ] imports [
         Utils,
-        NaiveTime.{ NaiveTime },
+        NaiveTime.{ NaiveTime, midnight },
     ]
 
 ## A date in the Gregorian calendar without a timezone.
@@ -232,8 +232,8 @@ expect
 
 ## Add a NaiveTime to a NaiveDate.
 withNaiveTime : NaiveDate, NaiveTime -> _
-withNaiveTime = \naiveDate, naiveTime -> { naiveDate, naiveTime }
+withNaiveTime = \naiveDate, naiveTime -> { naiveDate: naiveDate, naiveTime: naiveTime }
 
 expect
-    out = epoch |> withNaiveTime NaiveTime.midnight
-    out == { naiveDate: epoch, naiveTime: NaiveTime.midnight }
+    out = withNaiveTime epoch midnight
+    out == { naiveDate: epoch, naiveTime: midnight }
