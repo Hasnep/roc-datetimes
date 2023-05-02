@@ -3,9 +3,9 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
-      # - name: Prevent committing to main
-      #   id: no-commit-to-branch
-      #   args: [--branch, main]
+      - name: Prevent committing to main
+        id: no-commit-to-branch
+        args: [--branch, main]
       - name: Make sure files end with a newline character
         id: end-of-file-fixer
       - name: Remove trailing whitespace
