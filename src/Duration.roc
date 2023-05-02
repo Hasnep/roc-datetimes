@@ -1,6 +1,7 @@
 interface Duration exposes [
         add,
         Duration,
+        from,
         fromDays,
         fromHours,
         fromMicroseconds,
@@ -10,12 +11,12 @@ interface Duration exposes [
         fromSeconds,
         fromWeeks,
         getDays,
-        zero,
         getHours,
         getMinutes,
         getNanoseconds,
         getSeconds,
         getWeeks,
+        zero,
     ] imports [
         Utils,
     ]
@@ -138,6 +139,63 @@ fromWeeks = \weeks -> { seconds: Utils.weeksToSeconds weeks, nanoseconds: 0 }
 
 expect
     out = fromWeeks 123
+    out == { seconds: 74_390_400, nanoseconds: 0 }
+
+## Convert a number of time units to a duration.
+from : I64, [Nanoseconds, Milliseconds, Microseconds, Seconds, Minutes, Hours, Days, Weeks] -> Duration
+from = \value, unit ->
+    when unit is
+        Nanoseconds -> fromNanoseconds value
+        Milliseconds -> fromMilliseconds value
+        Microseconds -> fromMicroseconds value
+        Seconds -> fromSeconds value
+        Minutes -> fromMinutes value
+        Hours -> fromHours value
+        Days -> fromDays value
+        Weeks -> fromWeeks value
+
+expect
+    out = from 123 Nanoseconds
+    out == { seconds: 0, nanoseconds: 123 }
+
+expect
+    out = from -123 Nanoseconds
+    out == { seconds: -1, nanoseconds: 999_999_877 }
+
+expect
+    out = from 123 Milliseconds
+    out == { seconds: 0, nanoseconds: 123_000_000 }
+
+expect
+    out = from -123 Milliseconds
+    out == { seconds: -1, nanoseconds: 877_000_000 }
+
+expect
+    out = from 123 Microseconds
+    out == { seconds: 0, nanoseconds: 123_000 }
+
+expect
+    out = from -123 Microseconds
+    out == { seconds: -1, nanoseconds: 999_877_000 }
+
+expect
+    out = from 123 Seconds
+    out == { seconds: 123, nanoseconds: 0 }
+
+expect
+    out = from 123 Minutes
+    out == { seconds: 7380, nanoseconds: 0 }
+
+expect
+    out = from 123 Hours
+    out == { seconds: 442_800, nanoseconds: 0 }
+
+expect
+    out = from 123 Days
+    out == { seconds: 10_627_200, nanoseconds: 0 }
+
+expect
+    out = from 123 Weeks
     out == { seconds: 74_390_400, nanoseconds: 0 }
 
 # Methods
