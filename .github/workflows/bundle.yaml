@@ -20,7 +20,7 @@ jobs:
         with:
           roc-version: nightly
       - name: Bundle and release the library
-        uses: hasnep/bundle-roc-library@main
+        uses: hasnep/bundle-roc-library@v0.1.0
         with:
-          library-path: ./src/
+          library: src/main.roc
           token: ${{ github.token }}
