@@ -41,5 +41,7 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           path: generated-docs
+        if: ${{ github.event_name == "release" }}
       - name: Deploy docs
         uses: actions/deploy-pages@v2
+        if: ${{ github.event_name == "release" }}
