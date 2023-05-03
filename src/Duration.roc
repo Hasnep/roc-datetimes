@@ -10,14 +10,14 @@ interface Duration exposes [
         fromNanoseconds,
         fromSeconds,
         fromWeeks,
-        getDays,
-        getHours,
-        getMinutes,
-        getNanoseconds,
-        getSeconds,
-        getWeeks,
         max,
         min,
+        toNanoseconds,
+        toWholeDays,
+        toWholeHours,
+        toWholeMinutes,
+        toWholeSeconds,
+        toWholeWeeks,
         zero,
     ] imports [
         Utils,
@@ -211,76 +211,275 @@ expect
 
 # Methods
 
-## getNanosecondsModSecond
-getNanosecondsModSecond : Duration -> U32
-getNanosecondsModSecond = \duration -> duration.nanoseconds
-
 ## Get the number of nanoseconds in the duration.
-getNanoseconds : Duration -> I64
-getNanoseconds = \duration ->
-    seconds = getSeconds duration
-    nanoseconds = getNanosecondsModSecond duration
-    (Conversion.secondsToNanoseconds seconds) + (if Num.isPositive seconds then 1 else -1) * (Num.toI64 nanoseconds)
+toNanoseconds : Duration -> I128
+toNanoseconds = \duration -> Conversion.secondsToNanoseconds (Num.toI128 duration.seconds) + Num.toI128 duration.nanoseconds
 
 expect
-    out = getNanoseconds { seconds: 1, nanoseconds: 0 }
+    out = toNanoseconds zero
+    out == 0
+
+expect
+    halfASecond = { seconds: 0, nanoseconds: 500_000_000 }
+    out = toNanoseconds halfASecond
+    out == 500_000_000
+
+expect
+    oneSecond = { seconds: 1, nanoseconds: 0 }
+    out = toNanoseconds oneSecond
     out == 1_000_000_000
 
 expect
-    out = getNanoseconds { seconds: -1, nanoseconds: 0 }
+    negativeOneSecond = { seconds: -1, nanoseconds: 0 }
+    out = toNanoseconds negativeOneSecond
     out == -1_000_000_000
 
 expect
-    out = getNanoseconds { seconds: 1, nanoseconds: 500_000_000 }
+    oneAndAHalfSeconds = { seconds: 1, nanoseconds: 500_000_000 }
+    out = toNanoseconds oneAndAHalfSeconds
     out == 1_500_000_000
 
 expect
-    out = getNanoseconds { seconds: -1, nanoseconds: 500_000_000 }
+    negativeHalfASecond = { seconds: -1, nanoseconds: 500_000_000 }
+    out = toNanoseconds negativeHalfASecond
     out == -500_000_000
 
+## Get the number of whole microseconds in the duration, rounded towards zero.
+toWholeMicroseconds : Duration -> I64
+toWholeMicroseconds = \duration ->
+    Conversion.secondsToMicroseconds duration.seconds + Num.toI64 (Conversion.nanosecondsToWholeMicroseconds duration.nanoseconds)
+
+expect
+    out = toWholeMicroseconds zero
+    out == 0
+
+expect
+    halfASecond = { seconds: 0, nanoseconds: 500_000_000 }
+    out = toWholeMicroseconds halfASecond
+    out == 500_000
+
+expect
+    oneSecond = { seconds: 1, nanoseconds: 0 }
+    out = toWholeMicroseconds oneSecond
+    out == 1_000_000
+
+expect
+    oneAndAHalfSeconds = { seconds: 1, nanoseconds: 500_000_000 }
+    out = toWholeMicroseconds oneAndAHalfSeconds
+    out == 1_500_000
+
+expect
+    negativeOneSecond = { seconds: -1, nanoseconds: 0 }
+    out = toWholeMicroseconds negativeOneSecond
+    out == -1_000_000
+
+expect
+    negativeHalfASecond = { seconds: -1, nanoseconds: 500_000_000 }
+    out = toWholeMicroseconds negativeHalfASecond
+    out == -500_000
+
+## Get the number of whole milliseconds in the duration, rounded towards zero.
+toWholeMilliseconds : Duration -> I64
+toWholeMilliseconds = \duration ->
+    Conversion.secondsToMilliseconds duration.seconds + Conversion.nanosecondsToWholeMilliseconds (Num.toI64 duration.nanoseconds)
+
+expect
+    out = toWholeMilliseconds zero
+    out == 0
+
+expect
+    halfASecond = { seconds: 0, nanoseconds: 500_000_000 }
+    out = toWholeMilliseconds halfASecond
+    out == 500
+
+expect
+    oneSecond = { seconds: 1, nanoseconds: 0 }
+    out = toWholeMilliseconds oneSecond
+    out == 1_000
+
+expect
+    oneAndAHalfSeconds = { seconds: 1, nanoseconds: 500_000_000 }
+    out = toWholeMilliseconds oneAndAHalfSeconds
+    out == 1_500
+
+expect
+    negativeOneSecond = { seconds: -1, nanoseconds: 0 }
+    out = toWholeMilliseconds negativeOneSecond
+    out == -1_000
+
+expect
+    negativeHalfASecond = { seconds: -1, nanoseconds: 500_000_000 }
+    out = toWholeMilliseconds negativeHalfASecond
+    out == -500
+
 ## Get the number of whole seconds in the duration, rounded towards zero.
-getSeconds : Duration -> I64
-getSeconds = \duration ->
+toWholeSeconds : Duration -> I64
+toWholeSeconds = \duration ->
     if (Num.isNegative duration.seconds) && (Num.isPositive duration.nanoseconds) then
         duration.seconds + 1
     else
         duration.seconds
 
 expect
-    out = getSeconds { seconds: 1, nanoseconds: 0 }
+    out = toWholeSeconds zero
+    out == 0
+
+expect
+    halfASecond = { seconds: 0, nanoseconds: 500_000_000 }
+    out = toWholeSeconds halfASecond
+    out == 0
+
+expect
+    oneSecond = { seconds: 1, nanoseconds: 0 }
+    out = toWholeSeconds oneSecond
     out == 1
 
 expect
-    out = getSeconds { seconds: -1, nanoseconds: 0 }
+    oneAndAHalfSeconds = { seconds: 1, nanoseconds: 500_000_000 }
+    out = toWholeSeconds oneAndAHalfSeconds
+    out == 1
+
+expect
+    negativeOneSecond = { seconds: -1, nanoseconds: 0 }
+    out = toWholeSeconds negativeOneSecond
     out == -1
 
 expect
-    out = getSeconds { seconds: 0, nanoseconds: 500_000_000 }
-    out == 0
-
-expect
-    out = getSeconds { seconds: 1, nanoseconds: 500_000_000 }
-    out == 1
-
-expect
-    out = getSeconds { seconds: -1, nanoseconds: 500_000_000 }
+    negativeHalfASecond = { seconds: -1, nanoseconds: 500_000_000 }
+    out = toWholeSeconds negativeHalfASecond
     out == 0
 
 ## Get the number of whole minutes in the duration, rounded towards zero.
-getMinutes : Duration -> I64
-getMinutes = \duration -> duration |> getSeconds |> Conversion.secondsToWholeMinutes
+toWholeMinutes : Duration -> I64
+toWholeMinutes = \duration -> duration |> toWholeSeconds |> Conversion.secondsToWholeMinutes
+
+expect
+    out = toWholeMinutes zero
+    out == 0
+
+expect
+    zeroAndABit = { seconds: 0, nanoseconds: 1 }
+    out = toWholeMinutes zeroAndABit
+    out == 0
+
+expect
+    oneMinute = { seconds: 60, nanoseconds: 0 }
+    out = toWholeMinutes oneMinute
+    out == 1
+
+expect
+    oneMinuteAndABit = { seconds: 90, nanoseconds: 1 }
+    out = toWholeMinutes oneMinuteAndABit
+    out == 1
+
+expect
+    negativeOneMinute = { seconds: -60, nanoseconds: 0 }
+    out = toWholeMinutes negativeOneMinute
+    out == -1
+
+expect
+    negativeOneMinutePlusABit = { seconds: -60, nanoseconds: 1 }
+    out = toWholeMinutes negativeOneMinutePlusABit
+    out == 0
 
 ## Get the number of whole hours in the duration, rounded towards zero.
-getHours : Duration -> I64
-getHours = \duration -> duration |> getSeconds |> Conversion.secondsToWholeHours
+toWholeHours : Duration -> I64
+toWholeHours = \duration -> duration |> toWholeSeconds |> Conversion.secondsToWholeHours
+
+expect
+    out = toWholeHours zero
+    out == 0
+
+expect
+    zeroAndABit = { seconds: 0, nanoseconds: 1 }
+    out = toWholeHours zeroAndABit
+    out == 0
+
+expect
+    oneHour = { seconds: 3_600, nanoseconds: 0 }
+    out = toWholeHours oneHour
+    out == 1
+
+expect
+    oneHourAndABit = { seconds: 3_600, nanoseconds: 1 }
+    out = toWholeHours oneHourAndABit
+    out == 1
+
+expect
+    negativeOneHour = { seconds: -3_600, nanoseconds: 0 }
+    out = toWholeHours negativeOneHour
+    out == -1
+
+expect
+    negativeOneHourPlusABit = { seconds: -3_600, nanoseconds: 1 }
+    out = toWholeHours negativeOneHourPlusABit
+    out == 0
 
 ## Get the number of whole days in the duration, rounded towards zero.
-getDays : Duration -> I64
-getDays = \duration -> duration |> getSeconds |> Conversion.secondsToWholeDays
+toWholeDays : Duration -> I64
+toWholeDays = \duration -> duration |> toWholeSeconds |> Conversion.secondsToWholeDays
+
+expect
+    out = toWholeDays zero
+    out == 0
+
+expect
+    zeroAndABit = { seconds: 0, nanoseconds: 1 }
+    out = toWholeDays zeroAndABit
+    out == 0
+
+expect
+    oneDay = { seconds: 86_400, nanoseconds: 0 }
+    out = toWholeDays oneDay
+    out == 1
+
+expect
+    oneDayAndABit = { seconds: 86_400, nanoseconds: 1 }
+    out = toWholeDays oneDayAndABit
+    out == 1
+
+expect
+    negativeOneDay = { seconds: -86_400, nanoseconds: 0 }
+    out = toWholeDays negativeOneDay
+    out == -1
+
+expect
+    negativeOneDayPlusABit = { seconds: -86_400, nanoseconds: 1 }
+    out = toWholeDays negativeOneDayPlusABit
+    out == 0
 
 ## Get the number of whole weeks in the duration, rounded towards zero.
-getWeeks : Duration -> I64
-getWeeks = \duration -> duration |> getSeconds |> Conversion.secondsToWholeWeeks
+toWholeWeeks : Duration -> I64
+toWholeWeeks = \duration -> duration |> toWholeSeconds |> Conversion.secondsToWholeWeeks
+
+expect
+    out = toWholeWeeks zero
+    out == 0
+
+expect
+    zeroAndABit = { seconds: 0, nanoseconds: 1 }
+    out = toWholeWeeks zeroAndABit
+    out == 0
+
+expect
+    oneWeek = { seconds: 604_800, nanoseconds: 0 }
+    out = toWholeWeeks oneWeek
+    out == 1
+
+expect
+    oneWeekAndABit = { seconds: 604_800, nanoseconds: 1 }
+    out = toWholeWeeks oneWeekAndABit
+    out == 1
+
+expect
+    negativeOneWeek = { seconds: -604_800, nanoseconds: 0 }
+    out = toWholeWeeks negativeOneWeek
+    out == -1
+
+expect
+    negativeOneWeekPlusABit = { seconds: -604_800, nanoseconds: 1 }
+    out = toWholeWeeks negativeOneWeekPlusABit
+    out == 0
 
 ## Add two durations together.
 add : Duration, Duration -> Duration

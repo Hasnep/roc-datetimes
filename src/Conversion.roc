@@ -19,7 +19,11 @@ interface Conversion exposes [
         nanosecondsInASecond,
         nanosecondsToWholeMilliseconds,
         nanosecondsToWholeSeconds,
+        nanosecondsToWholeMicroseconds,
         secondsInAMinute,
+        secondsInAWeek,
+        secondsInADay,
+        secondsInAnHour,
         secondsToMicroseconds,
         secondsToMilliseconds,
         secondsToNanoseconds,
@@ -51,6 +55,7 @@ secondsInAWeek = secondsInAMinute * minutesInAnHour * hoursInADay * daysInAWeek
 
 nanosecondsToWholeMilliseconds = \nanoseconds -> nanoseconds // nanosecondsInAMillisecond
 nanosecondsToWholeSeconds = \nanoseconds -> nanoseconds // nanosecondsInASecond
+nanosecondsToWholeMicroseconds = \nanoseconds -> nanoseconds // nanosecondsInAMicrosecond
 
 # Microseconds
 
