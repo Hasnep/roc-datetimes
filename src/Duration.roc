@@ -16,6 +16,8 @@ interface Duration exposes [
         getNanoseconds,
         getSeconds,
         getWeeks,
+        max,
+        min,
         zero,
     ] imports [
         Utils,
@@ -32,6 +34,14 @@ Duration : { seconds : I64, nanoseconds : U32 }
 
 ## Zero duration.
 zero = { seconds: 0, nanoseconds: 0 }
+
+## The maximum possible duration, approximately 292 billion years
+max : Duration
+max = { seconds: Num.maxI64, nanoseconds: 999_999_999 }
+
+## The minimum possible duration, approximately -292 billion years.
+min : Duration
+min = { seconds: Num.minI64, nanoseconds: 0 }
 
 ## Convert a number of nanoseconds to a duration.
 fromNanoseconds : I64 -> Duration
