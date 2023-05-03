@@ -1,12 +1,6 @@
 name: Generate docs
 
 on:
-  # Run on all PRs
-  pull_request:
-  # Run when a PR is merged into main
-  push:
-    branches:
-      - main
   # Run when a release is published
   release:
     types:
@@ -41,7 +35,5 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           path: generated-docs
-        if: ${{ github.event_name == "release" }}
       - name: Deploy docs
         uses: actions/deploy-pages@v2
-        if: ${{ github.event_name == "release" }}
