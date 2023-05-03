@@ -6,6 +6,7 @@ interface NaiveTime exposes [
         midnight,
     ] imports [
         Utils.{ flooredIntegerDivisionAndModulus },
+        Conversion,
     ]
 
 ## A time of day, without a timezone.
@@ -61,9 +62,9 @@ expect
 ## Convert a number of seconds after midnight into a NaiveTime.
 fromSecondsAfterMidnight : U32, U32 -> [Ok NaiveTime, Err [InvalidNumberOfSeconds, InvalidNanosecond]]
 fromSecondsAfterMidnight = \seconds, nanoseconds ->
-    if (seconds >= (Utils.daysToSeconds 1)) then
+    if (seconds >= (Conversion.daysToSeconds 1)) then
         Err InvalidNumberOfSeconds
-    else if (nanoseconds >= (Utils.secondsToNanoseconds 1)) then
+    else if (nanoseconds >= (Conversion.secondsToNanoseconds 1)) then
         Err InvalidNanosecond
     else
         (hour, remainingSeconds) = flooredIntegerDivisionAndModulus seconds 24
@@ -195,14 +196,14 @@ expect
 ## withMicrosecond
 withMicrosecond : NaiveTime, U32 -> [Ok NaiveTime, Err [InvalidNumberOfMicroseconds]]
 withMicrosecond = \naiveTime, microsecond ->
-    if (microsecond >= (Utils.secondsToMicroseconds 1)) then
+    if (microsecond >= (Conversion.secondsToMicroseconds 1)) then
         Err InvalidNumberOfMicroseconds
     else
         Ok {
             hour: naiveTime.hour,
             minute: naiveTime.minute,
             second: naiveTime.second,
-            nanosecond: Utils.microsecondsToNanoseconds microsecond,
+            nanosecond: Conversion.microsecondsToNanoseconds microsecond,
         }
 
 expect

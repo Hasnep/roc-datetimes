@@ -1,19 +1,10 @@
 interface Utils exposes [
-        daysToSeconds,
         flooredIntegerDivisionAndModulus,
-        hoursToSeconds,
-        microsecondsToNanoseconds,
-        millisecondsToNanoseconds,
-        minutesToSeconds,
         nDaysInMonthOfYear,
         nDaysInEachMonthOfYear,
         padIntegerToLength,
-        secondsToMicroseconds,
-        secondsToMilliseconds,
         subtractWhileGreaterThanZero,
-        secondsToNanoseconds,
         nDaysInYear,
-        weeksToSeconds,
         unwrap,
         cumulativeSum,
     ] imports []
@@ -32,16 +23,6 @@ cumulativeSum : List (Num a) -> List (Num a)
 cumulativeSum = \xs ->
     xs
     |> List.walk [0] (\accumulator, x -> accumulator |> List.append ((List.last accumulator |> unwrap "This can never happen because the list always has at least one element") + x))
-
-microsecondsToNanoseconds = \microseconds -> microseconds * 1000
-millisecondsToNanoseconds = \milliseconds -> milliseconds * 1_000_000
-secondsToNanoseconds = \seconds -> seconds * 1_000_000_000
-secondsToMicroseconds = \seconds -> seconds * 1_000_000
-secondsToMilliseconds = \seconds -> seconds * 1_000
-minutesToSeconds = \minutes -> minutes * 60
-hoursToSeconds = \hours -> hours * 3_600
-daysToSeconds = \days -> days * 86_400
-weeksToSeconds = \weeks -> weeks * 604_800
 
 ## Divide the numerator by the denominator, returning the quotient and remainder.
 ##

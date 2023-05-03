@@ -19,6 +19,7 @@ interface Duration exposes [
         zero,
     ] imports [
         Utils,
+        Conversion,
     ]
 
 ## An amount of time measured to the nanosecond.
@@ -35,11 +36,11 @@ zero = { seconds: 0, nanoseconds: 0 }
 ## Convert a number of nanoseconds to a duration.
 fromNanoseconds : I64 -> Duration
 fromNanoseconds = \nanoseconds ->
-    (seconds, nanosecondsRemainder) = Utils.flooredIntegerDivisionAndModulus nanoseconds (Utils.secondsToNanoseconds 1)
+    (seconds, nanosecondsRemainder) = Utils.flooredIntegerDivisionAndModulus nanoseconds Conversion.nanosecondsInASecond
     if Num.isNegative nanosecondsRemainder then
         {
             seconds: (seconds - 1),
-            nanoseconds: Num.toU32 ((Utils.secondsToNanoseconds 1) + nanosecondsRemainder),
+            nanoseconds: Num.toU32 (Conversion.nanosecondsInASecond + nanosecondsRemainder),
         }
     else
         {
@@ -58,16 +59,16 @@ expect
 ## Convert a number of milliseconds to a duration.
 fromMilliseconds : I64 -> Duration
 fromMilliseconds = \milliseconds ->
-    (seconds, millisecondsRemainder) = Utils.flooredIntegerDivisionAndModulus milliseconds (Utils.millisecondsToNanoseconds 1)
+    (seconds, millisecondsRemainder) = Utils.flooredIntegerDivisionAndModulus milliseconds Conversion.nanosecondsInAMillisecond
     if Num.isNegative millisecondsRemainder then
         {
             seconds: (seconds - 1),
-            nanoseconds: Num.toU32 ((Utils.secondsToNanoseconds 1) + (Utils.millisecondsToNanoseconds millisecondsRemainder)),
+            nanoseconds: Num.toU32 (Conversion.nanosecondsInASecond + (Conversion.millisecondsToNanoseconds millisecondsRemainder)),
         }
     else
         {
             seconds: seconds,
-            nanoseconds: Num.toU32 (Utils.millisecondsToNanoseconds millisecondsRemainder),
+            nanoseconds: Num.toU32 (Conversion.millisecondsToNanoseconds millisecondsRemainder),
         }
 
 expect
@@ -81,16 +82,16 @@ expect
 ## Convert a number of microseconds to a duration.
 fromMicroseconds : I64 -> Duration
 fromMicroseconds = \microseconds ->
-    (seconds, microsecondsRemainder) = Utils.flooredIntegerDivisionAndModulus microseconds (Utils.secondsToMicroseconds 1)
+    (seconds, microsecondsRemainder) = Utils.flooredIntegerDivisionAndModulus microseconds Conversion.microsecondsInASecond
     if Num.isNegative microsecondsRemainder then
         {
             seconds: (seconds - 1),
-            nanoseconds: Num.toU32 ((Utils.secondsToNanoseconds 1) + (Utils.microsecondsToNanoseconds microsecondsRemainder)),
+            nanoseconds: Num.toU32 (Conversion.nanosecondsInASecond + (Conversion.microsecondsToNanoseconds microsecondsRemainder)),
         }
     else
         {
             seconds: seconds,
-            nanoseconds: Num.toU32 (Utils.microsecondsToNanoseconds microsecondsRemainder),
+            nanoseconds: Num.toU32 (Conversion.microsecondsToNanoseconds microsecondsRemainder),
         }
 
 expect
@@ -111,7 +112,7 @@ expect
 
 ## Convert a number of minutes to a duration.
 fromMinutes : I64 -> Duration
-fromMinutes = \minutes -> { seconds: Utils.minutesToSeconds minutes, nanoseconds: 0 }
+fromMinutes = \minutes -> { seconds: Conversion.minutesToSeconds minutes, nanoseconds: 0 }
 
 expect
     out = fromMinutes 123
@@ -119,7 +120,7 @@ expect
 
 ## Convert a number of hours to a duration.
 fromHours : I64 -> Duration
-fromHours = \hours -> { seconds: Utils.hoursToSeconds hours, nanoseconds: 0 }
+fromHours = \hours -> { seconds: Conversion.hoursToSeconds hours, nanoseconds: 0 }
 
 expect
     out = fromHours 123
@@ -127,7 +128,7 @@ expect
 
 ## Convert a number of days to a duration.
 fromDays : I64 -> Duration
-fromDays = \days -> { seconds: Utils.daysToSeconds days, nanoseconds: 0 }
+fromDays = \days -> { seconds: Conversion.daysToSeconds days, nanoseconds: 0 }
 
 expect
     out = fromDays 123
@@ -135,7 +136,7 @@ expect
 
 ## Convert a number of weeks to a duration.
 fromWeeks : I64 -> Duration
-fromWeeks = \weeks -> { seconds: Utils.weeksToSeconds weeks, nanoseconds: 0 }
+fromWeeks = \weeks -> { seconds: Conversion.weeksToSeconds weeks, nanoseconds: 0 }
 
 expect
     out = fromWeeks 123
@@ -209,7 +210,7 @@ getNanoseconds : Duration -> I64
 getNanoseconds = \duration ->
     seconds = getSeconds duration
     nanoseconds = getNanosecondsModSecond duration
-    (Utils.secondsToNanoseconds seconds) + (if Num.isPositive seconds then 1 else -1) * (Num.toI64 nanoseconds)
+    (Conversion.secondsToNanoseconds seconds) + (if Num.isPositive seconds then 1 else -1) * (Num.toI64 nanoseconds)
 
 expect
     out = getNanoseconds { seconds: 1, nanoseconds: 0 }
@@ -257,27 +258,27 @@ expect
 
 ## Get the number of whole minutes in the duration, rounded towards zero.
 getMinutes : Duration -> I64
-getMinutes = \duration -> (getSeconds duration) // (Utils.minutesToSeconds 1)
+getMinutes = \duration -> duration |> getSeconds |> Conversion.secondsToWholeMinutes
 
 ## Get the number of whole hours in the duration, rounded towards zero.
 getHours : Duration -> I64
-getHours = \duration -> (getSeconds duration) // (Utils.hoursToSeconds 1)
+getHours = \duration -> duration |> getSeconds |> Conversion.secondsToWholeHours
 
 ## Get the number of whole days in the duration, rounded towards zero.
 getDays : Duration -> I64
-getDays = \duration -> (getSeconds duration) // (Utils.daysToSeconds 1)
+getDays = \duration -> duration |> getSeconds |> Conversion.secondsToWholeDays
 
 ## Get the number of whole weeks in the duration, rounded towards zero.
 getWeeks : Duration -> I64
-getWeeks = \duration -> (getSeconds duration) // (Utils.weeksToSeconds 1)
+getWeeks = \duration -> duration |> getSeconds |> Conversion.secondsToWholeWeeks
 
 ## Add two durations together.
 add : Duration, Duration -> Duration
 add = \a, b ->
     seconds = a.seconds + b.seconds
     nanoseconds = a.nanoseconds + b.nanoseconds
-    if (nanoseconds >= (Utils.secondsToNanoseconds 1)) then
-        { seconds: seconds + 1, nanoseconds: nanoseconds - (Utils.secondsToNanoseconds 1) }
+    if (nanoseconds >= (Conversion.secondsToNanoseconds 1)) then
+        { seconds: seconds + 1, nanoseconds: nanoseconds - (Conversion.secondsToNanoseconds 1) }
     else
         { seconds, nanoseconds }
 
