@@ -27,7 +27,7 @@ interface Duration exposes [
 ## An amount of time measured to the nanosecond.
 ##
 ## The maximum value of this type is Num.maxI64 seconds + 999_999_999 nanoseconds, approximately 292 billion years.
-## The minimum value of this type is Num.minI64 seconds + 999_999_999 nanoseconds, approximately -292 billion years.
+## The minimum value of this type is Num.minI64 seconds, approximately -292 billion years.
 Duration : { seconds : I64, nanoseconds : U32 }
 
 # Constructors
