@@ -32,7 +32,7 @@ jobs:
           REPOSITORY_NAME=$(echo hasnep/roc-datetimes | sed -E 's/^.+\/(.+)$/\1/')
           find generated-docs/ -type f -name '*.html' -exec sed -i "s/\(href\|src\)=\"\//\1=\"\/$REPOSITORY_NAME\//g" {} +
       - name: Upload docs artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v2
         with:
           path: generated-docs
       - name: Deploy docs
