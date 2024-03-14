@@ -44,7 +44,7 @@ expect
 ## padLeft
 # padLeft : Str , Str, U8 -> Str
 padLeft = \x, padWith, desiredLength ->
-    currentLength = Str.countGraphemes x
+    currentLength = Str.countUtf8Bytes x # TODO replace with proper unicode length when available
     if currentLength >= desiredLength then
         x
     else
