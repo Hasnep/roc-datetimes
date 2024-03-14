@@ -122,7 +122,7 @@ nDaysInMonthOfYear : U8, I64 -> [Ok U8, Err [InvalidMonth]]
 nDaysInMonthOfYear = \month, year ->
     year
     |> nDaysInEachMonthOfYear
-    |> List.get (Num.toNat month)
+    |> List.get (Num.intCast month)
     |> Result.mapErr \_ -> InvalidMonth
 
 expect
