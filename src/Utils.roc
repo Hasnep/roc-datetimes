@@ -49,7 +49,7 @@ padLeft = \x, padWith, desiredLength ->
         x
     else
         extendBy = desiredLength - currentLength
-        x |> (Str.withPrefix (Str.repeat padWith extendBy))
+        x |> Str.withPrefix (Str.repeat padWith extendBy)
 
 expect
     out = padLeft "hello" " " 10

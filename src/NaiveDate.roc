@@ -42,7 +42,7 @@ fromYmd = \year, month, day ->
             dayOfYear =
                 Utils.nDaysInEachMonthOfYear year
                 |> List.map Num.toU16
-                |> List.sublist { start: 0, len: Num.toNat month }
+                |> List.sublist { start: 0, len: Num.intCast month }
                 |> List.sum
                 |> Num.add (Num.toU16 day)
                 |> Num.sub 1

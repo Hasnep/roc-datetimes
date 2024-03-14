@@ -81,8 +81,8 @@ parseIsoStr = \isoStr ->
     if Str.isEmpty isoStr then
         Err InvalidIsoStr
     else
-        startsWithT = isoStr |> Str.startsWithScalar 'T'
-        segments = (if startsWithT then (isoStr |> Str.replaceFirst "T" "" |> Result.withDefault "") else isoStr) |> Str.split ":"
+        startsWithT = isoStr |> Str.startsWith "T"
+        segments = (if startsWithT then (isoStr |> Str.replaceFirst "T" "") else isoStr) |> Str.split ":"
         nSegments = List.len segments
         (hours, minutes, seconds) =
             if nSegments == 1 then
