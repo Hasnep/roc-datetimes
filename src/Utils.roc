@@ -44,12 +44,12 @@ expect
 ## padLeft
 # padLeft : Str , Str, U8 -> Str
 padLeft = \x, padWith, desiredLength ->
-    currentLength = Str.countGraphemes x
+    currentLength = Str.countUtf8Bytes x # TODO replace with proper unicode length when available
     if currentLength >= desiredLength then
         x
     else
         extendBy = desiredLength - currentLength
-        x |> (Str.withPrefix (Str.repeat padWith extendBy))
+        x |> Str.withPrefix (Str.repeat padWith extendBy)
 
 expect
     out = padLeft "hello" " " 10
@@ -122,7 +122,7 @@ nDaysInMonthOfYear : U8, I64 -> [Ok U8, Err [InvalidMonth]]
 nDaysInMonthOfYear = \month, year ->
     year
     |> nDaysInEachMonthOfYear
-    |> List.get (Num.toNat month)
+    |> List.get (Num.intCast month)
     |> Result.mapErr \_ -> InvalidMonth
 
 expect
