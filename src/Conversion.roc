@@ -1,4 +1,5 @@
-interface Conversion exposes [
+interface Conversion
+    exposes [
         daysInAWeek,
         daysToSeconds,
         hoursInADay,
@@ -32,7 +33,8 @@ interface Conversion exposes [
         secondsToWholeMinutes,
         secondsToWholeWeeks,
         weeksToSeconds,
-    ] imports []
+    ]
+    imports []
 
 # Constants
 

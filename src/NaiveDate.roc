@@ -1,4 +1,5 @@
-interface NaiveDate exposes [
+interface NaiveDate
+    exposes [
         NaiveDate,
         fromYmd,
         toIsoStr,
@@ -10,7 +11,8 @@ interface NaiveDate exposes [
         getDay,
         getYear,
         getMonth,
-    ] imports [
+    ]
+    imports [
         Utils,
         NaiveTime.{ NaiveTime, midnight },
     ]
