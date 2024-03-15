@@ -1,4 +1,5 @@
-interface Duration exposes [
+interface Duration
+    exposes [
         add,
         Duration,
         from,
@@ -19,7 +20,8 @@ interface Duration exposes [
         toWholeSeconds,
         toWholeWeeks,
         zero,
-    ] imports [
+    ]
+    imports [
         Utils,
         Conversion,
     ]

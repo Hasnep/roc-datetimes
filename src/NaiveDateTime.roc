@@ -1,9 +1,11 @@
-interface NaiveDateTime exposes [
+interface NaiveDateTime
+    exposes [
         NaiveDateTime,
         epoch,
         fromYmdhmsn,
         fromYmdhms,
-    ] imports [
+    ]
+    imports [
         NaiveDate,
         NaiveDate.{ NaiveDate },
         NaiveTime,

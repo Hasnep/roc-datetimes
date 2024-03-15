@@ -1,4 +1,5 @@
-interface Utils exposes [
+interface Utils
+    exposes [
         flooredIntegerDivisionAndModulus,
         nDaysInMonthOfYear,
         nDaysInEachMonthOfYear,
@@ -7,7 +8,8 @@ interface Utils exposes [
         nDaysInYear,
         unwrap,
         cumulativeSum,
-    ] imports []
+    ]
+    imports []
 
 # Functions
 

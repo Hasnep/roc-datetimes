@@ -1,10 +1,12 @@
-interface NaiveTime exposes [
+interface NaiveTime
+    exposes [
         NaiveTime,
         fromHms,
         fromHmsn,
         toIsoStr,
         midnight,
-    ] imports [
+    ]
+    imports [
         Utils.{ flooredIntegerDivisionAndModulus },
         Conversion,
     ]
