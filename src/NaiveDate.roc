@@ -5,7 +5,7 @@ interface NaiveDate
         toIsoStr,
         withNaiveTime,
         toYmd,
-        epoch,
+        unixEpoch,
         fromOrdinalDate,
         fromDaysSinceCE,
         getDay,
@@ -27,9 +27,9 @@ NaiveDate : { year : I64, dayOfYear : U16 }
 
 # Constructors
 
-## The Gregorian epoch. You know, that epoch.
-epoch : NaiveDate
-epoch = { year: 1970, dayOfYear: 0 }
+## The Unix epoch, 1970-01-01.
+unixEpoch : NaiveDate
+unixEpoch = { year: 1970, dayOfYear: 0 }
 
 ## Convert a year, month, and day to a NaiveDate.
 fromYmd : I64, U8, U8 -> [Ok NaiveDate, Err [InvalidMonth, InvalidDay]]
@@ -163,7 +163,7 @@ expect
         |> List.map Num.toU64
         |> List.sum
     out = fromDaysSinceCE nDaysInFirstFourYearsOfCE
-    out == (fromYmd 4 12 31 |> Result.withDefault epoch)
+    out == (fromYmd 4 12 31 |> Result.withDefault unixEpoch)
 
 # Serialise
 
@@ -177,7 +177,7 @@ toIsoStr = \naiveDate ->
     "\(yearStr)-\(monthStr)-\(dayStr)"
 
 expect
-    out = toIsoStr epoch
+    out = toIsoStr unixEpoch
     out == "1970-01-01"
 
 expect
@@ -213,7 +213,7 @@ getYear : NaiveDate -> I64
 getYear = \naiveDate -> naiveDate.year
 
 expect
-    out = getYear epoch
+    out = getYear unixEpoch
     out == 1970
 
 ## Get the month of a NaiveDate.
@@ -221,7 +221,7 @@ getMonth : NaiveDate -> U8
 getMonth = \naiveDate -> (toYmd naiveDate).month
 
 expect
-    out = getMonth epoch
+    out = getMonth unixEpoch
     out == 1
 
 ## Get the day of a NaiveDate.
@@ -229,7 +229,7 @@ getDay : NaiveDate -> U8
 getDay = \naiveDate -> (toYmd naiveDate).day
 
 expect
-    out = getDay epoch
+    out = getDay unixEpoch
     out == 1
 
 ## Add a NaiveTime to a NaiveDate.
@@ -237,5 +237,5 @@ withNaiveTime : NaiveDate, NaiveTime -> _
 withNaiveTime = \naiveDate, naiveTime -> { naiveDate: naiveDate, naiveTime: naiveTime }
 
 expect
-    out = withNaiveTime epoch midnight
-    out == { naiveDate: epoch, naiveTime: midnight }
+    out = withNaiveTime unixEpoch midnight
+    out == { naiveDate: unixEpoch, naiveTime: midnight }
