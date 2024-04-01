@@ -6,6 +6,7 @@ interface NaiveDate
         withNaiveTime,
         toYmd,
         unixEpoch,
+        firstDayOfCE,
         fromOrdinalDate,
         fromDaysSinceCE,
         getDay,
@@ -30,6 +31,10 @@ NaiveDate : { year : I64, dayOfYear : U16 }
 ## The Unix epoch, 1970-01-01.
 unixEpoch : NaiveDate
 unixEpoch = { year: 1970, dayOfYear: 0 }
+
+## The first day of the common era, 0001-01-01.
+firstDayOfCE : NaiveDate
+firstDayOfCE = { year: 1, dayOfYear: 0 }
 
 ## Convert a year, month, and day to a NaiveDate.
 fromYmd : I64, U8, U8 -> Result NaiveDate [InvalidMonth, InvalidDay]
