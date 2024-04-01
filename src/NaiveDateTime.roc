@@ -1,7 +1,7 @@
 interface NaiveDateTime
     exposes [
         NaiveDateTime,
-        epoch,
+        unixEpoch,
         fromYmdhmsn,
         fromYmdhms,
     ]
@@ -16,9 +16,9 @@ interface NaiveDateTime
 ## A date and time without a timezone.
 NaiveDateTime : { naiveDate : NaiveDate.NaiveDate, naiveTime : NaiveTime.NaiveTime }
 
-## You know, that epoch.
-epoch : NaiveDateTime
-epoch = { naiveDate: NaiveDate.epoch, naiveTime: NaiveTime.midnight }
+## The Unix epoch, 1970-01-01T00:00:00.
+unixEpoch : NaiveDateTime
+unixEpoch = { naiveDate: NaiveDate.unixEpoch, naiveTime: NaiveTime.midnight }
 
 # Constructors
 
@@ -29,7 +29,7 @@ fromYmdhmsn = \year, month, day, hour, minute, second, nanosecond ->
     naiveDate = NaiveDate.fromYmd year month day
     if (Result.isOk naiveTime) && (Result.isOk naiveDate) then
         Ok {
-            naiveDate: naiveDate |> Result.withDefault NaiveDate.epoch,
+            naiveDate: naiveDate |> Result.withDefault NaiveDate.unixEpoch,
             naiveTime: naiveTime |> Result.withDefault NaiveTime.midnight,
         }
     else
