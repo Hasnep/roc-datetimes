@@ -138,16 +138,16 @@ expect
     out == { seconds: 442_800, nanoseconds: 0 }
 
 ## Convert a number of days to a duration.
-fromDays : I64 -> Duration
-fromDays = \days -> { seconds: Conversion.daysToSeconds days, nanoseconds: 0 }
+fromDays : I32 -> Duration
+fromDays = \days -> { seconds: Conversion.daysToSeconds (Num.toI64 days), nanoseconds: 0 }
 
 expect
     out = fromDays 123
     out == { seconds: 10_627_200, nanoseconds: 0 }
 
 ## Convert a number of weeks to a duration.
-fromWeeks : I64 -> Duration
-fromWeeks = \weeks -> { seconds: Conversion.weeksToSeconds weeks, nanoseconds: 0 }
+fromWeeks : I32 -> Duration
+fromWeeks = \weeks -> { seconds: Conversion.weeksToSeconds (Num.toI64 weeks), nanoseconds: 0 }
 
 expect
     out = fromWeeks 123

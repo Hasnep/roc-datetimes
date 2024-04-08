@@ -95,4 +95,4 @@ daysToSeconds = \days -> days * secondsInADay
 
 # Weeks
 
-weeksToSeconds = \weeks -> weeks * secondsInAWeek
+weeksToSeconds = \weeks -> (Num.toI64 weeks) * secondsInAWeek
