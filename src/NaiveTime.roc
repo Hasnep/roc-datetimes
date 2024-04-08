@@ -21,7 +21,7 @@ midnight : NaiveTime
 midnight = { hour: 0u8, minute: 0u8, second: 0u8, nanosecond: 0u32 }
 
 ## Convert a number of hours, minutes, seconds, and nanoseconds into a NaiveTime.
-fromHmsn : U8, U8, U8, U32 -> [Ok NaiveTime, Err [InvalidTime]]
+fromHmsn : U8, U8, U8, U32 -> Result NaiveTime [InvalidTime]
 fromHmsn = \hour, minute, second, nanosecond ->
     if
         (0 <= hour && hour < 24)
@@ -38,7 +38,7 @@ expect
     out == Ok { hour: 4, minute: 3, second: 2, nanosecond: 1 }
 
 ## Convert a number of hours, minutes, seconds, and milliseconds into a NaiveTime.
-fromHmsm : U8, U8, U8, U32 -> [Ok NaiveTime, Err [InvalidTime]]
+fromHmsm : U8, U8, U8, U32 -> Result NaiveTime [InvalidTime]
 fromHmsm = \hour, minute, second, millisecond -> fromHmsn hour minute second (1_000_000 * millisecond)
 
 expect
@@ -46,7 +46,7 @@ expect
     out == Ok { hour: 4, minute: 3, second: 2, nanosecond: 1_000_000u32 }
 
 ## Convert a number of hours, minutes, seconds, and microseconds into a NaiveTime.
-fromHmsμ : U8, U8, U8, U32 -> [Ok NaiveTime, Err [InvalidTime]]
+fromHmsμ : U8, U8, U8, U32 -> Result NaiveTime [InvalidTime]
 fromHmsμ = \hour, minute, second, microsecond -> fromHmsn hour minute second (1000 * microsecond)
 
 expect
@@ -54,7 +54,7 @@ expect
     out == Ok { hour: 4, minute: 3, second: 2, nanosecond: 1000 }
 
 ## Convert a number of hours, minutes, and seconds into a NaiveTime.
-fromHms : U8, U8, U8 -> [Ok NaiveTime, Err [InvalidTime]]
+fromHms : U8, U8, U8 -> Result NaiveTime [InvalidTime]
 fromHms = \hour, minute, second -> fromHmsn hour minute second 0u32
 
 expect
@@ -62,7 +62,7 @@ expect
     out == Ok { hour: 4, minute: 3, second: 2, nanosecond: 0 }
 
 ## Convert a number of seconds after midnight into a NaiveTime.
-fromSecondsAfterMidnight : U32, U32 -> [Ok NaiveTime, Err [InvalidNumberOfSeconds, InvalidNanosecond]]
+fromSecondsAfterMidnight : U32, U32 -> Result NaiveTime [InvalidNumberOfSeconds, InvalidNanosecond]
 fromSecondsAfterMidnight = \seconds, nanoseconds ->
     if (seconds >= (Conversion.daysToSeconds 1)) then
         Err InvalidNumberOfSeconds
@@ -78,7 +78,7 @@ expect fromSecondsAfterMidnight 123_456_789 0 == Err InvalidNumberOfSeconds
 expect fromSecondsAfterMidnight 0 1_000_000_001 == Err InvalidNanosecond
 
 ## Parses a string in the format "T?[HH]:?[MM]:?[SS].[sss]" to a NaiveTime.
-parseIsoStr : Str -> [Ok NaiveTime, Err [InvalidIsoStr, InvalidTime]]
+parseIsoStr : Str -> Result NaiveTime [InvalidIsoStr, InvalidTime]
 parseIsoStr = \isoStr ->
     if Str.isEmpty isoStr then
         Err InvalidIsoStr
@@ -133,7 +133,7 @@ expect
 # Methods
 
 ## withHour
-withHour : NaiveTime, U8 -> [Ok NaiveTime, Err [InvalidNumberOfHours]]
+withHour : NaiveTime, U8 -> Result NaiveTime [InvalidNumberOfHours]
 withHour = \naiveTime, hour ->
     if (hour >= 24) then
         Err InvalidNumberOfHours
@@ -154,7 +154,7 @@ expect
     out == Err InvalidNumberOfHours
 
 ## withMinute
-withMinute : NaiveTime, U8 -> [Ok NaiveTime, Err [InvalidNumberOfMinutes]]
+withMinute : NaiveTime, U8 -> Result NaiveTime [InvalidNumberOfMinutes]
 withMinute = \naiveTime, minute ->
     if (minute >= 60) then
         Err InvalidNumberOfMinutes
@@ -175,7 +175,7 @@ expect
     out == Err InvalidNumberOfMinutes
 
 ## withSecond
-withSecond : NaiveTime, U8 -> [Ok NaiveTime, Err [InvalidNumberOfSeconds]]
+withSecond : NaiveTime, U8 -> Result NaiveTime [InvalidNumberOfSeconds]
 withSecond = \naiveTime, second ->
     if (second >= 60) then
         Err InvalidNumberOfSeconds
@@ -196,7 +196,7 @@ expect
     out == Err InvalidNumberOfSeconds
 
 ## withMicrosecond
-withMicrosecond : NaiveTime, U32 -> [Ok NaiveTime, Err [InvalidNumberOfMicroseconds]]
+withMicrosecond : NaiveTime, U32 -> Result NaiveTime [InvalidNumberOfMicroseconds]
 withMicrosecond = \naiveTime, microsecond ->
     if (microsecond >= (Conversion.secondsToMicroseconds 1)) then
         Err InvalidNumberOfMicroseconds
@@ -217,7 +217,7 @@ expect
     out == Err InvalidNumberOfMicroseconds
 
 ## withNanosecond
-withNanosecond : NaiveTime, U32 -> [Ok NaiveTime, Err [InvalidNanosecond]]
+withNanosecond : NaiveTime, U32 -> Result NaiveTime [InvalidNanosecond]
 withNanosecond = \naiveTime, nanosecond ->
     if (nanosecond >= 1_000_000_000) then
         Err InvalidNanosecond

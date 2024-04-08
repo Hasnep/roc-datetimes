@@ -32,7 +32,7 @@ unixEpoch : NaiveDate
 unixEpoch = { year: 1970, dayOfYear: 0 }
 
 ## Convert a year, month, and day to a NaiveDate.
-fromYmd : I64, U8, U8 -> [Ok NaiveDate, Err [InvalidMonth, InvalidDay]]
+fromYmd : I64, U8, U8 -> Result NaiveDate [InvalidMonth, InvalidDay]
 fromYmd = \year, month, day ->
     if month == 0 || month > 12 then
         Err InvalidMonth
@@ -70,7 +70,7 @@ expect
 ##
 ## The first day of the year is 1st January.
 ## Trying to convert the 0th day of the year or a day after the last day of the year returns an InvalidDayOfYear error.
-fromOrdinalDate : I64, U16 -> [Ok NaiveDate, Err [InvalidDayOfYear]]
+fromOrdinalDate : I64, U16 -> Result NaiveDate [InvalidDayOfYear]
 fromOrdinalDate = \year, dayOfYear ->
     if dayOfYear == 0 || dayOfYear > (Utils.nDaysInYear year) then
         Err InvalidDayOfYear

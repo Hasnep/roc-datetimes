@@ -14,7 +14,7 @@ interface Utils
 # Functions
 
 ## unwrap
-unwrap : [Ok a, Err _], Str -> a
+unwrap : Result a _, Str -> a
 unwrap = \x, message ->
     when x is
         Ok v -> v
@@ -120,7 +120,7 @@ nDaysInEachMonthOfYear : I64 -> List U8
 nDaysInEachMonthOfYear = \year -> [0, 31, 28 + (if isLeapYear year then 1 else 0), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 ## nDaysInMonthOfYear
-nDaysInMonthOfYear : U8, I64 -> [Ok U8, Err [InvalidMonth]]
+nDaysInMonthOfYear : U8, I64 -> Result U8 [InvalidMonth]
 nDaysInMonthOfYear = \month, year ->
     year
     |> nDaysInEachMonthOfYear
