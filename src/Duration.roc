@@ -67,6 +67,14 @@ expect
     out = fromNanoseconds -123
     out == { seconds: -1, nanoseconds: 999_999_877 }
 
+expect
+    out = fromNanoseconds Num.maxI64
+    out == { seconds: 9_223_372_036, nanoseconds: 854_775_807 }
+
+expect
+    out = fromNanoseconds Num.minI64
+    out == { seconds: -9_223_372_037, nanoseconds: 145_224_192 }
+
 ## Convert a number of milliseconds to a duration.
 fromMilliseconds : I64 -> Duration
 fromMilliseconds = \milliseconds ->
@@ -89,6 +97,14 @@ expect
 expect
     out = fromMilliseconds -123
     out == { seconds: -1, nanoseconds: 877_000_000 }
+
+expect
+    out = fromMilliseconds Num.maxI64
+    out == { seconds: 9_223_372_036_854, nanoseconds: 2_712_886_720 }
+
+expect
+    out = fromMilliseconds Num.minI64
+    out == { seconds: -9_223_372_036_855, nanoseconds: 2_581_080_576 }
 
 ## Convert a number of microseconds to a duration.
 fromMicroseconds : I64 -> Duration
@@ -113,6 +129,14 @@ expect
     out = fromMicroseconds -123
     out == { seconds: -1, nanoseconds: 999_877_000 }
 
+expect
+    out = fromMicroseconds Num.maxI64
+    out == { seconds: 9_223_372_036_854, nanoseconds: 775_807_000 }
+
+expect
+    out = fromMicroseconds Num.minI64
+    out == { seconds: -9_223_372_036_855, nanoseconds: 224_192_000 }
+
 ## Convert a number of seconds to a duration.
 fromSeconds : I64 -> Duration
 fromSeconds = \seconds -> { seconds, nanoseconds: 0 }
@@ -120,6 +144,14 @@ fromSeconds = \seconds -> { seconds, nanoseconds: 0 }
 expect
     out = fromSeconds 123
     out == { seconds: 123, nanoseconds: 0 }
+
+expect
+    out = fromSeconds Num.maxI64
+    out == { seconds: Num.maxI64, nanoseconds: 0 }
+
+expect
+    out = fromSeconds Num.minI64
+    out == { seconds: Num.minI64, nanoseconds: 0 }
 
 ## Convert a number of minutes to a duration.
 fromMinutes : I32 -> Duration
@@ -129,6 +161,14 @@ expect
     out = fromMinutes 123
     out == { seconds: 7380, nanoseconds: 0 }
 
+expect
+    out = fromMinutes Num.maxI32
+    out == { seconds: 128_849_018_820, nanoseconds: 0 }
+
+expect
+    out = fromMinutes Num.minI32
+    out == { seconds: -128_849_018_880, nanoseconds: 0 }
+
 ## Convert a number of hours to a duration.
 fromHours : I32 -> Duration
 fromHours = \hours -> { seconds: Conversion.hoursToSeconds (Num.toI64 hours), nanoseconds: 0 }
@@ -136,6 +176,14 @@ fromHours = \hours -> { seconds: Conversion.hoursToSeconds (Num.toI64 hours), na
 expect
     out = fromHours 123
     out == { seconds: 442_800, nanoseconds: 0 }
+
+expect
+    out = fromHours Num.maxI32
+    out == { seconds: 7_730_941_129_200, nanoseconds: 0 }
+
+expect
+    out = fromHours Num.minI32
+    out == { seconds: -7_730_941_132_800, nanoseconds: 0 }
 
 ## Convert a number of days to a duration.
 fromDays : I32 -> Duration
@@ -145,6 +193,14 @@ expect
     out = fromDays 123
     out == { seconds: 10_627_200, nanoseconds: 0 }
 
+expect
+    out = fromDays Num.maxI32
+    out == { seconds: 185_542_587_100_800, nanoseconds: 0 }
+
+expect
+    out = fromDays Num.minI32
+    out == { seconds: -185_542_587_187_200, nanoseconds: 0 }
+
 ## Convert a number of weeks to a duration.
 fromWeeks : I32 -> Duration
 fromWeeks = \weeks -> { seconds: Conversion.weeksToSeconds (Num.toI64 weeks), nanoseconds: 0 }
@@ -152,6 +208,14 @@ fromWeeks = \weeks -> { seconds: Conversion.weeksToSeconds (Num.toI64 weeks), na
 expect
     out = fromWeeks 123
     out == { seconds: 74_390_400, nanoseconds: 0 }
+
+expect
+    out = fromWeeks Num.maxI32
+    out == { seconds: 1_298_798_109_705_600, nanoseconds: 0 }
+
+expect
+    out = fromWeeks Num.minI32
+    out == { seconds: -1_298_798_110_310_400, nanoseconds: 0 }
 
 # Methods
 
@@ -187,6 +251,14 @@ expect
     negativeHalfASecond = { seconds: -1, nanoseconds: 500_000_000 }
     out = toNanoseconds negativeHalfASecond
     out == -500_000_000
+
+expect
+    out = toNanoseconds min
+    out == Num.minI64 |> Num.toI128 |> Conversion.secondsToNanoseconds
+
+expect
+    out = toNanoseconds max
+    out == Num.maxI64 |> Num.toI128 |> Conversion.secondsToNanoseconds |> Num.add 999_999_999
 
 ## Get the number of whole microseconds in the duration, rounded towards zero.
 toWholeMicroseconds : Duration -> I64
@@ -292,6 +364,10 @@ expect
     negativeHalfASecond = { seconds: -1, nanoseconds: 500_000_000 }
     out = toWholeSeconds negativeHalfASecond
     out == 0
+
+expect
+    out = toWholeSeconds min
+    out == Num.minI64
 
 ## Get the number of whole minutes in the duration, rounded towards zero.
 toWholeMinutes : Duration -> I64
@@ -447,3 +523,10 @@ expect
     threeSeconds = { seconds: 3, nanoseconds: 0 }
     out = add oneAndAHalfSeconds oneAndAHalfSeconds
     out == threeSeconds
+
+expect
+    oneSecond = { seconds: 1, nanoseconds: 0 }
+    negativeTwoSeconds = { seconds: -2, nanoseconds: 0 }
+    negativeOneSecond = { seconds: -1, nanoseconds: 0 }
+    out = add oneSecond negativeTwoSeconds
+    out == negativeOneSecond
