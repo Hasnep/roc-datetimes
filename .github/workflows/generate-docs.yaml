@@ -22,15 +22,9 @@ jobs:
           roc-version: nightly
       - name: Generate docs
         run: roc docs src/main.roc
-      - name: Add index page
-        run: |
-          echo -n '<!doctype html><html lang="en"><body><ul>' > generated-docs/index.html
-          find generated-docs/ -mindepth 1 -type d -printf '<li><a href="/%P">%P</a></li>' >> generated-docs/index.html
-          echo '</ul></body>' >> generated-docs/index.html
       - name: Fix absolute paths
         run: |
-          REPOSITORY_NAME=$(echo hasnep/roc-datetimes | sed -E 's/^.+\/(.+)$/\1/')
-          find generated-docs/ -type f -name '*.html' -exec sed -i "s/\(href\|src\)=\"\//\1=\"\/$REPOSITORY_NAME\//g" {} +
+          find generated-docs/ -type f -name '*.html' -exec sed -i "s/\(href\|src\)=\"\//\1=\"\/${{ github.event.repository.name }}\//g" {} +
       - name: Upload docs artifact
         uses: actions/upload-pages-artifact@v1
         with:
