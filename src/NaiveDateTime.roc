@@ -23,7 +23,7 @@ unixEpoch = { naiveDate: NaiveDate.unixEpoch, naiveTime: NaiveTime.midnight }
 # Constructors
 
 ## Convert a year, month, day, hour, minute, second, and nanosecond to a NaiveDateTime.
-fromYmdhmsn : I64, U8, U8, U8, U8, U8, U32 -> [Ok NaiveDateTime, Err [InvalidDateTime]]
+fromYmdhmsn : I64, U8, U8, U8, U8, U8, U32 -> Result NaiveDateTime [InvalidDateTime]
 fromYmdhmsn = \year, month, day, hour, minute, second, nanosecond ->
     naiveTime = NaiveTime.fromHmsn hour minute second nanosecond
     naiveDate = NaiveDate.fromYmd year month day
@@ -51,7 +51,7 @@ expect
     }
 
 ## Convert a year, month, day, hour, minute, and second to a NaiveDateTime.
-fromYmdhms : I64, U8, U8, U8, U8, U8 -> [Ok NaiveDateTime, Err [InvalidDateTime]]
+fromYmdhms : I64, U8, U8, U8, U8, U8 -> Result NaiveDateTime [InvalidDateTime]
 fromYmdhms = \year, month, day, hour, minute, second ->
     fromYmdhmsn year month day hour minute second 0
 
