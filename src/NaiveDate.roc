@@ -56,6 +56,14 @@ fromYmd = \year, month, day ->
             Ok { year, dayOfYear }
 
 expect
+    out = fromYmd 1970 1 1
+    out == Ok unixEpoch
+
+expect
+    out = fromYmd 1 1 1
+    out == Ok firstDayOfCE
+
+expect
     out = fromYmd 2023 1 1
     out == Ok { year: 2023, dayOfYear: 0 }
 
@@ -83,12 +91,16 @@ fromOrdinalDate = \year, dayOfYear ->
         Ok { year: year, dayOfYear: dayOfYear - 1 }
 
 expect
-    out = fromOrdinalDate 1 0 # 0th day of 1 CE
-    out == Err InvalidDayOfYear
+    out = fromOrdinalDate 1970 1
+    out == Ok unixEpoch
 
 expect
-    out = fromOrdinalDate 1 1 # 1st Janurary 1 CE
-    out == Ok { year: 1, dayOfYear: 0 }
+    out = fromOrdinalDate 1 1
+    out == Ok firstDayOfCE
+
+expect
+    out = fromOrdinalDate 1 0 # 0th day of 1 CE
+    out == Err InvalidDayOfYear
 
 expect
     out = fromOrdinalDate 1 365 # 31st December 1 CE
@@ -186,8 +198,8 @@ expect
     out == "1970-01-01"
 
 expect
-    out = toIsoStr { year: 2023, dayOfYear: 364 }
-    out == "2023-12-31"
+    out = toIsoStr firstDayOfCE
+    out == "0001-01-01"
 
 # Methods
 
@@ -198,7 +210,11 @@ toYmd = \naiveDate ->
     { year: naiveDate.year, month: Num.toU8 month, day: Num.toU8 dayIndex + 1 }
 
 expect
-    out = toYmd { year: 1, dayOfYear: 0 } # 1st Janurary 1 CE
+    out = toYmd unixEpoch
+    out == { year: 1970, month: 1, day: 1 }
+
+expect
+    out = toYmd firstDayOfCE
     out == { year: 1, month: 1, day: 1 }
 
 expect
@@ -221,12 +237,20 @@ expect
     out = getYear unixEpoch
     out == 1970
 
+expect
+    out = getYear firstDayOfCE
+    out == 1
+
 ## Get the month of a NaiveDate.
 getMonth : NaiveDate -> U8
 getMonth = \naiveDate -> (toYmd naiveDate).month
 
 expect
     out = getMonth unixEpoch
+    out == 1
+
+expect
+    out = getMonth firstDayOfCE
     out == 1
 
 ## Get the day of a NaiveDate.
@@ -237,6 +261,10 @@ expect
     out = getDay unixEpoch
     out == 1
 
+expect
+    out = getDay firstDayOfCE
+    out == 1
+
 ## Add a NaiveTime to a NaiveDate.
 withNaiveTime : NaiveDate, NaiveTime -> _
 withNaiveTime = \naiveDate, naiveTime -> { naiveDate: naiveDate, naiveTime: naiveTime }
@@ -244,3 +272,7 @@ withNaiveTime = \naiveDate, naiveTime -> { naiveDate: naiveDate, naiveTime: naiv
 expect
     out = withNaiveTime unixEpoch midnight
     out == { naiveDate: unixEpoch, naiveTime: midnight }
+
+expect
+    out = withNaiveTime firstDayOfCE midnight
+    out == { naiveDate: firstDayOfCE, naiveTime: midnight }
