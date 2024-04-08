@@ -22,11 +22,6 @@ jobs:
           roc-version: nightly
       - name: Generate docs
         run: roc docs src/main.roc
-      - name: Add index page
-        run: |
-          echo -n '<!doctype html><html lang="en"><body><ul>' > generated-docs/index.html
-          find generated-docs/ -mindepth 1 -type d -printf '<li><a href="/%P">%P</a></li>' >> generated-docs/index.html
-          echo '</ul></body>' >> generated-docs/index.html
       - name: Fix absolute paths
         run: |
           REPOSITORY_NAME=$(echo hasnep/roc-datetimes | sed -E 's/^.+\/(.+)$/\1/')
