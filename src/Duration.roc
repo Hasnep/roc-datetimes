@@ -122,16 +122,16 @@ expect
     out == { seconds: 123, nanoseconds: 0 }
 
 ## Convert a number of minutes to a duration.
-fromMinutes : I64 -> Duration
-fromMinutes = \minutes -> { seconds: Conversion.minutesToSeconds minutes, nanoseconds: 0 }
+fromMinutes : I32 -> Duration
+fromMinutes = \minutes -> { seconds: Conversion.minutesToSeconds (Num.toI64 minutes), nanoseconds: 0 }
 
 expect
     out = fromMinutes 123
     out == { seconds: 7380, nanoseconds: 0 }
 
 ## Convert a number of hours to a duration.
-fromHours : I64 -> Duration
-fromHours = \hours -> { seconds: Conversion.hoursToSeconds hours, nanoseconds: 0 }
+fromHours : I32 -> Duration
+fromHours = \hours -> { seconds: Conversion.hoursToSeconds (Num.toI64 hours), nanoseconds: 0 }
 
 expect
     out = fromHours 123
